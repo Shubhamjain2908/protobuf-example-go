@@ -13,7 +13,7 @@ import (
 func main() {
 	sm := doSimple()
 
-	writeToFile("Simple.bin", sm)
+	readAndWriteDeme(sm)
 }
 
 // returning reference to SimpleMessage (pass by reference)
@@ -33,6 +33,15 @@ func doSimple() *simplepb.SimpleMessage {
 	return &sm
 }
 
+func readAndWriteDeme(sm proto.Message) {
+	writeToFile("Simple.bin", sm)
+
+	// creating a simple struct
+	sm2 := &simplepb.SimpleMessage{}
+	readFromFile("Simple.bin", sm2)
+	fmt.Println(sm2)
+}
+
 func writeToFile(fname string, pb proto.Message) error {
 	out, err := proto.Marshal(pb)
 	if err != nil {
@@ -46,5 +55,22 @@ func writeToFile(fname string, pb proto.Message) error {
 	}
 
 	fmt.Println("Data has been written!")
+	return nil
+}
+
+func readFromFile(fname string, pb proto.Message) error {
+	in, err := ioutil.ReadFile(fname)
+
+	if err != nil {
+		log.Fatalln("Something went wrong when reading the file", err)
+		return err
+	}
+
+	err2 := proto.Unmarshal(in, pb)
+	if err2 != nil {
+		log.Fatalln("Coudn't put the bytes into the protocol buffer struct", err)
+		return err2
+	}
+
 	return nil
 }
