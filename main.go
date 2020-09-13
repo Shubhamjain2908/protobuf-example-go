@@ -12,7 +12,8 @@ func main() {
 	doSimple()
 }
 
-func doSimple() {
+// returning reference to SimpleMessage (pass by reference)
+func doSimple() *simplepb.SimpleMessage {
 	sm := simplepb.SimpleMessage{
 		Id:         12345,
 		IsSimple:   true,
@@ -26,4 +27,6 @@ func doSimple() {
 
 	fmt.Println("Id => ", sm.GetId())
 	fmt.Println("Name => ", sm.GetName())
+
+	return &sm
 }
