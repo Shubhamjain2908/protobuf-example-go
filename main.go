@@ -140,5 +140,5 @@ func doComplex() {
 		},
 	}
 
-	fmt.Println(cm)
+	fmt.Println(cm.String())
 }
