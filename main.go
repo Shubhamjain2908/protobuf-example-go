@@ -16,9 +16,7 @@ func main() {
 	sm := doSimple()
 
 	readAndWriteDeme(sm)
-	smAsString := toJSON(sm)
-
-	fmt.Println("Json string =>", smAsString)
+	jsonDemo(sm)
 }
 
 // returning reference to SimpleMessage (pass by reference)
@@ -80,6 +78,16 @@ func readFromFile(fname string, pb proto.Message) error {
 	return nil
 }
 
+func jsonDemo(sm proto.Message) {
+	smAsString := toJSON(sm)
+
+	fmt.Println("Json string =>", smAsString)
+
+	sm2 := &simplepb.SimpleMessage{}
+	fromJSON(smAsString, sm2)
+	fmt.Println("Successfully created protp Struct =>", sm2)
+}
+
 func toJSON(pb proto.Message) string {
 	marshler := jsonpb.Marshaler{}
 	out, err := marshler.MarshalToString(pb)
@@ -88,4 +96,11 @@ func toJSON(pb proto.Message) string {
 		return ""
 	}
 	return out
+}
+
+func fromJSON(in string, pb proto.Message) {
+	err := jsonpb.UnmarshalString(in, pb)
+	if err != nil {
+		log.Fatalln("Couldn't unmarshal the JSON into the pb struct", err)
+	}
 }
