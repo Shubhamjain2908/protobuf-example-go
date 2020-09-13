@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/golang/protobuf/jsonpb"
+
 	"github.com/golang/protobuf/proto"
 
 	simplepb "github.com/shubhamjain2908/protobuf-example-go/src/simple"
@@ -14,6 +16,9 @@ func main() {
 	sm := doSimple()
 
 	readAndWriteDeme(sm)
+	smAsString := toJSON(sm)
+
+	fmt.Println("Json string =>", smAsString)
 }
 
 // returning reference to SimpleMessage (pass by reference)
@@ -39,7 +44,7 @@ func readAndWriteDeme(sm proto.Message) {
 	// creating a simple struct
 	sm2 := &simplepb.SimpleMessage{}
 	readFromFile("Simple.bin", sm2)
-	fmt.Println(sm2)
+	fmt.Println("Read the contents", sm2)
 }
 
 func writeToFile(fname string, pb proto.Message) error {
@@ -73,4 +78,14 @@ func readFromFile(fname string, pb proto.Message) error {
 	}
 
 	return nil
+}
+
+func toJSON(pb proto.Message) string {
+	marshler := jsonpb.Marshaler{}
+	out, err := marshler.MarshalToString(pb)
+	if err != nil {
+		log.Fatalln("Can't convert to JSON", err)
+		return ""
+	}
+	return out
 }
